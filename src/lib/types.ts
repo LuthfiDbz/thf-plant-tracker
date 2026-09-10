@@ -27,8 +27,3 @@ export interface PlantLog {
 
 export const STATUS_FLOW: LogStatus[] = ['Seedling', 'Planting', 'Harvested']
 
-export function nextStatus(current: LogStatus): LogStatus | null {
-  const idx = STATUS_FLOW.indexOf(current)
-  if (idx === -1 || idx === STATUS_FLOW.length - 1) return null
-  return STATUS_FLOW[idx + 1]
-}

@@ -8,11 +8,17 @@ export function PlantCard({ plant, onClick }: { plant: Plant; onClick: () => voi
   return (
     <Card onClick={onClick} style={{ cursor: 'pointer', marginBottom: 12 }}>
       <Flex gap="3" align="center">
-        <img
-          className="plant-card-image"
-          src={plant.image_url ?? undefined}
-          alt={plant.name}
-        />
+        {plant.image_url ? (
+          <img
+            className="plant-card-image"
+            src={plant.image_url}
+            alt={plant.name}
+          />
+        ) : (
+          <div className="plant-card-avatar" aria-label={plant.name}>
+            THF
+          </div>
+        )}
         <Flex direction="column" gap="1" style={{ flex: 1, minWidth: 0 }}>
           <Text weight="bold" size="3" truncate>
             {plant.name}

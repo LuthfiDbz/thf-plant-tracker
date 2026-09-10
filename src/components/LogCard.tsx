@@ -19,27 +19,30 @@ export function LogCard({ log, onClick }: { log: PlantLog; onClick: () => void }
 
   return (
     <Card onClick={onClick} style={{ cursor: 'pointer', marginBottom: 12 }}>
-      <Flex gap="3">
+      <Flex gap="3" align="center">
         <img
           className="log-card-image"
           src={log.plants?.image_url ?? undefined}
           alt={log.plants?.name ?? t('card.unknown_plant')}
         />
         <Flex direction="column" gap="1" style={{ flex: 1, minWidth: 0 }}>
-          <Text weight="bold" size="3" truncate>
-            {log.plants?.name ?? t('card.unknown_plant')}
-          </Text>
+          <Flex>
+             <StatusBadge status={log.status} />
+          </Flex>   
+          <Flex align="center" justify="between">
+            <Text weight="bold" size="3" truncate>
+              {log.plants?.name ?? t('card.unknown_plant')}
+            </Text>
+          </Flex>
           <Text size="1" color="gray">
             {t('card.planted')} {formatDate(log.plant_date, locale)}
           </Text>
           <Text size="1" color="gray">
             {t('card.target_harvest')} {formatDate(log.harvest_date, locale)}
           </Text>
-          <Flex gap="2" mt="1" wrap="wrap">
-            <StatusBadge status={log.status} />
-          </Flex>
           {log.notes && (
             <Text size="1" color="gray" mt="1" style={{ whiteSpace: 'pre-wrap' }}>
+              {t('card.notes')}: <br />
               {log.notes}
             </Text>
           )}

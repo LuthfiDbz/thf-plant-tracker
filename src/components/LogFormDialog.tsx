@@ -115,6 +115,11 @@ export function LogFormDialog({ open, onClose, defaultMethodId, plants, editingL
 
         <Flex direction="column" gap="3" mt="2">
           <label>
+            <img
+              src={selectedPlant?.image_url || ''}
+              alt={selectedPlant?.name || ''}
+              width={100}
+            />
             <Text as="div" size="2" mb="1" weight="medium">
               {t('log_form.plant')}
             </Text>
@@ -135,22 +140,6 @@ export function LogFormDialog({ open, onClose, defaultMethodId, plants, editingL
             )}
           </label>
 
-          <label>
-            <Text as="div" size="2" mb="1" weight="medium">
-              {t('log_form.status')}
-            </Text>
-            <Select.Root value={status} onValueChange={(v) => setStatus(v as LogStatus)}>
-              <Select.Trigger style={{ width: '100%' }} />
-              <Select.Content>
-                {STATUS_FLOW.map((s) => (
-                  <Select.Item key={s} value={s}>
-                    {t(`status.${s.toLowerCase()}`)}
-                  </Select.Item>
-                ))}
-              </Select.Content>
-            </Select.Root>
-          </label>
-
           <label style={{ display: 'block' }}>
             <Text as="div" size="2" mb="1" weight="medium">
               {t('log_form.plant_date')}
@@ -164,7 +153,7 @@ export function LogFormDialog({ open, onClose, defaultMethodId, plants, editingL
             >
               <TextField.Root
                 type="text"
-                readOnly
+                // readOnly
                 value={formatDisplayDate(plantDate, locale)}
                 placeholder="dd mmm yyyy"
                 style={{ pointerEvents: 'none' }}
@@ -199,7 +188,7 @@ export function LogFormDialog({ open, onClose, defaultMethodId, plants, editingL
             >
               <TextField.Root
                 type="text"
-                readOnly
+                // readOnly
                 value={formatDisplayDate(harvestDate, locale)}
                 placeholder="dd mmm yyyy"
                 style={{ pointerEvents: 'none' }}
@@ -226,6 +215,22 @@ export function LogFormDialog({ open, onClose, defaultMethodId, plants, editingL
               {t('log_form.notes')}
             </Text>
             <TextArea value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} />
+          </label>
+
+          <label>
+            <Text as="div" size="2" mb="1" weight="medium">
+              {t('log_form.status')}
+            </Text>
+            <Select.Root value={status} onValueChange={(v) => setStatus(v as LogStatus)}>
+              <Select.Trigger style={{ width: '100%' }} />
+              <Select.Content>
+                {STATUS_FLOW.map((s) => (
+                  <Select.Item key={s} value={s}>
+                    {t(`status.${s.toLowerCase()}`)}
+                  </Select.Item>
+                ))}
+              </Select.Content>
+            </Select.Root>
           </label>
 
           {error && (

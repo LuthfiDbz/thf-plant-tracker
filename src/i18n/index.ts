@@ -36,6 +36,7 @@ const resources = {
         target_harvest: 'Target harvest:',
         unknown_plant: 'Unknown plant',
         takes_days: '{{name}} usually takes ~{{days}} days to harvest.',
+        notes: 'Notes',
       },
       logs: {
         no_logs: 'No logs yet. Tap + to add your first {{title}} log.',
@@ -95,6 +96,7 @@ const resources = {
         plant_date: 'Plant date',
         harvest_date: 'Harvest date',
         clear: 'Clear filters',
+        apply: 'Apply',
       },
     },
   },
@@ -131,6 +133,7 @@ const resources = {
         target_harvest: 'Target panen:',
         unknown_plant: 'Tanaman tidak dikenal',
         takes_days: '{{name}} biasanya butuh ~{{days}} hari untuk dipanen.',
+        notes: 'Catatan',
       },
       logs: {
         no_logs: 'Belum ada log. Ketuk + untuk menambah log {{title}} pertama Anda.',
@@ -190,6 +193,7 @@ const resources = {
         plant_date: 'Tanggal tanam',
         harvest_date: 'Tanggal panen',
         clear: 'Hapus filter',
+        apply: 'Terapkan',
       },
     },
   },

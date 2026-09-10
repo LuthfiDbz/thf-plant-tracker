@@ -12,6 +12,20 @@ interface Props {
   onSaved: (plant: Plant) => void
 }
 
+/** Extract the storage object path from a Supabase public URL.
+ *  Public URL format: .../storage/v1/object/public/<bucket>/<path>
+ */
+function extractStoragePath(publicUrl: string): string | null {
+  try {
+    const marker = `/object/public/${PLANT_IMAGES_BUCKET}/`
+    const idx = publicUrl.indexOf(marker)
+    if (idx === -1) return null
+    return decodeURIComponent(publicUrl.slice(idx + marker.length))
+  } catch {
+    return null
+  }
+}
+
 export function PlantFormDialog({ open, onClose, editingPlant, onSaved }: Props) {
   const { t } = useTranslation()
   const [name, setName] = useState('')
@@ -61,6 +75,16 @@ export function PlantFormDialog({ open, onClose, editingPlant, onSaved }: Props)
     let finalImageUrl = imageUrl
 
     if (imageFile) {
+      // Hapus foto lama dari storage jika ada
+      if (imageUrl) {
+        const oldPath = extractStoragePath(imageUrl)
+        if (oldPath) {
+          await supabase.storage.from(PLANT_IMAGES_BUCKET).remove([oldPath])
+          // Lanjut meski delete gagal (tidak block upload baru)
+        }
+      }
+
+      // Upload foto baru
       const ext = imageFile.name.split('.').pop()
       const path = `${crypto.randomUUID()}.${ext}`
       const { error: uploadError } = await supabase.storage

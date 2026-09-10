@@ -76,19 +76,19 @@ body {
   position: fixed;
   bottom: 76px;
   left: 50%;
-  transform: translateX(190px);
+  transform: translateX(-50%);
   z-index: 9;
 }
 
 @media (max-width: 480px) {
-  .fab {
+  /* .fab {
     transform: translateX(calc(50vw - 60px));
-  }
+  } */
 }
 
 .log-card-image {
-  width: 64px;
-  height: 64px;
+  width: 7rem;
+  height: 7rem;
   border-radius: var(--radius-3);
   object-fit: cover;
   background-color: var(--gray-4);
@@ -96,12 +96,28 @@ body {
 }
 
 .plant-card-image {
-  width: 56px;
-  height: 56px;
+  width: 6rem;
+  height: 6rem;
   border-radius: var(--radius-3);
   object-fit: cover;
   background-color: var(--gray-4);
   flex-shrink: 0;
+}
+
+.plant-card-avatar {
+  width: 6rem;
+  height: 6rem;
+  border-radius: var(--radius-3);
+  background: linear-gradient(135deg, var(--accent-9), var(--accent-11));
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  user-select: none;
 }
 
 .scroll-sentinel {
@@ -154,3 +170,7 @@ body {
   opacity: 1;
 }
 
+/* Override style button Radix UI agar selalu pointer */
+.rt-Button {
+  cursor: pointer !important;
+}

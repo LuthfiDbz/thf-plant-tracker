@@ -7,7 +7,6 @@ import { useAuth } from '../context/AuthContext'
 import type { MethodId, Plant, PlantLog } from '../lib/types'
 import { LogCard } from '../components/LogCard'
 import { FilterBar, emptyFilters, type LogFilters } from '../components/FilterBar'
-import { StatusChangeDialog } from '../components/StatusChangeDialog'
 import { LogFormDialog } from '../components/LogFormDialog'
 
 const PAGE_SIZE = 10
@@ -27,7 +26,6 @@ export default function LogListPage({ methodId, title, accentColor }: Props) {
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(true)
   const [loading, setLoading] = useState(false)
-  const [selectedLog, setSelectedLog] = useState<PlantLog | null>(null)
   const [formOpen, setFormOpen] = useState(false)
   const [editingLog, setEditingLog] = useState<PlantLog | null>(null)
   const sentinelRef = useRef<HTMLDivElement>(null)
@@ -96,9 +94,6 @@ export default function LogListPage({ methodId, title, accentColor }: Props) {
     return () => observer.disconnect()
   }, [hasMore, loading, fetchPage, filters])
 
-  function handleLogUpdated(updated: PlantLog) {
-    setLogs((prev) => prev.map((l) => (l.id === updated.id ? updated : l)))
-  }
 
   function handleLogSaved(saved: PlantLog) {
     setLogs((prev) => {
@@ -113,8 +108,7 @@ export default function LogListPage({ methodId, title, accentColor }: Props) {
     setFormOpen(true)
   }
 
-  function openEditFromStatusDialog(log: PlantLog) {
-    setSelectedLog(null)
+  function openEdit(log: PlantLog) {
     setEditingLog(log)
     setFormOpen(true)
   }
@@ -134,7 +128,7 @@ export default function LogListPage({ methodId, title, accentColor }: Props) {
         )}
 
         {logs.map((log) => (
-          <LogCard key={log.id} log={log} onClick={() => setSelectedLog(log)} />
+          <LogCard key={log.id} log={log} onClick={() => openEdit(log)} />
         ))}
 
         {loading && (
@@ -147,18 +141,12 @@ export default function LogListPage({ methodId, title, accentColor }: Props) {
       </Flex>
 
       <div className="fab">
-        <Button size="3" radius="full" onClick={openCreate} style={{ boxShadow: 'var(--shadow-4)' }}>
+        <Button size="3" radius="full" onClick={openCreate} style={{ boxShadow: 'var(--shadow-4)', cursor: "pointer" }}>
           <Plus size={18} />
           {t('logs.add')}
         </Button>
       </div>
 
-      <StatusChangeDialog
-        log={selectedLog}
-        onClose={() => setSelectedLog(null)}
-        onUpdated={handleLogUpdated}
-        onEdit={openEditFromStatusDialog}
-      />
 
       <LogFormDialog
         open={formOpen}

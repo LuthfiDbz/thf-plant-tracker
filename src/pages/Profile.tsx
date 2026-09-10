@@ -26,7 +26,7 @@ export default function Profile() {
     <Flex direction="column" align="center" gap="4" style={{ paddingTop: 24, maxWidth: 360, margin: '0 auto' }}>
       <Avatar size="6" radius="full" fallback={initial} />
       <Flex direction="column" align="center" gap="1">
-        <Heading size="5">{displayName}</Heading>
+        <Heading size="5">Admin</Heading>
         <Text size="2" color="gray">
           {user?.email}
         </Text>
