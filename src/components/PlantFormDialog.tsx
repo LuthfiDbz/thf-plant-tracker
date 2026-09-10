@@ -4,6 +4,7 @@ import { Camera, ImagePlus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { Plant } from '../lib/types'
 import { supabase, PLANT_IMAGES_BUCKET } from '../lib/supabase'
+import { useAuth } from '../context/AuthContext'
 
 interface Props {
   open: boolean
@@ -28,6 +29,7 @@ function extractStoragePath(publicUrl: string): string | null {
 
 export function PlantFormDialog({ open, onClose, editingPlant, onSaved }: Props) {
   const { t } = useTranslation()
+  const { user } = useAuth()
   const [name, setName] = useState('')
   const [days, setDays] = useState('')
   const [notes, setNotes] = useState('')
@@ -194,16 +196,19 @@ export function PlantFormDialog({ open, onClose, editingPlant, onSaved }: Props)
           )}
         </Flex>
 
-        <Flex gap="3" mt="4" justify="end">
-          <Dialog.Close>
-            <Button variant="soft" color="gray">
-              {t('plant_form.cancel')}
+        {user?.email === "admin@planttracker.com" &&
+          <Flex gap="3" mt="4" justify="end">
+            <Dialog.Close>
+              <Button variant="soft" color="gray">
+                {t('plant_form.cancel')}
+              </Button>
+            </Dialog.Close>
+            <Button onClick={handleSubmit} loading={saving}>
+              {t('plant_form.save')}
             </Button>
-          </Dialog.Close>
-          <Button onClick={handleSubmit} loading={saving}>
-            {t('plant_form.save')}
-          </Button>
-        </Flex>
+          </Flex>
+        }
+
       </Dialog.Content>
     </Dialog.Root>
   )

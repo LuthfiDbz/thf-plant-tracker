@@ -29,6 +29,7 @@ export default function LogListPage({ methodId, title, accentColor }: Props) {
   const [formOpen, setFormOpen] = useState(false)
   const [editingLog, setEditingLog] = useState<PlantLog | null>(null)
   const sentinelRef = useRef<HTMLDivElement>(null)
+  const isFetchingRef = useRef(false)
 
   // load master plant list once (for form dropdown)
   useEffect(() => {
@@ -41,7 +42,8 @@ export default function LogListPage({ methodId, title, accentColor }: Props) {
 
   const fetchPage = useCallback(
     async (pageIndex: number, activeFilters: LogFilters) => {
-      if (!user) return
+      if (!user || isFetchingRef.current) return
+      isFetchingRef.current = true
       setLoading(true)
 
       let query = supabase
@@ -60,6 +62,7 @@ export default function LogListPage({ methodId, title, accentColor }: Props) {
 
       const { data, error } = await query
       setLoading(false)
+      isFetchingRef.current = false
 
       if (error) return
       const newLogs = (data as PlantLog[]) ?? []
@@ -82,12 +85,10 @@ export default function LogListPage({ methodId, title, accentColor }: Props) {
     const el = sentinelRef.current
     if (!el) return
     const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && hasMore && !loading) {
-        setPage((p) => {
-          const next = p + 1
-          fetchPage(next, filters)
-          return next
-        })
+      if (entries[0].isIntersecting && hasMore && !loading && !isFetchingRef.current) {
+        const nextPage = page + 1
+        setPage(nextPage)
+        fetchPage(nextPage, filters)
       }
     })
     observer.observe(el)
@@ -96,11 +97,14 @@ export default function LogListPage({ methodId, title, accentColor }: Props) {
 
 
   function handleLogSaved(saved: PlantLog) {
-    setLogs((prev) => {
-      const exists = prev.some((l) => l.id === saved.id)
-      if (exists) return prev.map((l) => (l.id === saved.id ? saved : l))
-      return [saved, ...prev]
-    })
+    // setLogs((prev) => {
+    //   const exists = prev.some((l) => l.id === saved.id)
+    //   if (exists) return prev.map((l) => (l.id === saved.id ? saved : l))
+    //   return [saved, ...prev]
+    // })
+    setPage(0)
+    setHasMore(true)
+    fetchPage(0, filters)
   }
 
   function openCreate() {

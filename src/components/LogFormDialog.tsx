@@ -108,6 +108,28 @@ export function LogFormDialog({ open, onClose, defaultMethodId, plants, editingL
     }
   }
 
+  const handleDelete = async () => {
+    if (!editingLog) return
+
+    setSaving(true)
+    setError('')
+
+    const { error } = await supabase
+      .from('plant_logs')
+      .delete()
+      .eq('id', editingLog?.id)
+
+    setSaving(false)
+    
+    if (error) {
+      setError(error.message)
+      return
+    }
+
+    onSaved(editingLog)
+    onClose()
+  }
+
   return (
     <Dialog.Root open={open} onOpenChange={(o) => !o && onClose()}>
       <Dialog.Content maxWidth="420px">
@@ -240,15 +262,22 @@ export function LogFormDialog({ open, onClose, defaultMethodId, plants, editingL
           )}
         </Flex>
 
-        <Flex gap="3" mt="4" justify="end">
-          <Dialog.Close>
-            <Button variant="soft" color="gray">
-              {t('log_form.cancel')}
+        <Flex gap="3" mt="4" justify={editingLog ? "between" : "end"}>
+          {editingLog &&
+            <Button onClick={handleDelete} loading={saving} variant="outline" color='red'>
+              {t('log_form.delete')}
             </Button>
-          </Dialog.Close>
-          <Button onClick={handleSubmit} loading={saving}>
-            {t('log_form.save')}
-          </Button>
+          }
+          <Flex gap='2' justify="end">
+            <Dialog.Close>
+              <Button variant="soft" color="gray">
+                {t('log_form.cancel')}
+              </Button>
+            </Dialog.Close>
+            <Button onClick={handleSubmit} loading={saving}>
+              {t('log_form.save')}
+            </Button>
+          </Flex>
         </Flex>
       </Dialog.Content>
     </Dialog.Root>

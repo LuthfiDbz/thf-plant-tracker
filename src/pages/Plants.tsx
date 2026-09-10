@@ -6,11 +6,13 @@ import { supabase } from '../lib/supabase'
 import type { Plant } from '../lib/types'
 import { PlantCard } from '../components/PlantCard'
 import { PlantFormDialog } from '../components/PlantFormDialog'
+import { useAuth } from '../context/AuthContext'
 
 const PAGE_SIZE = 10
 
 export default function Plants() {
   const { t } = useTranslation()
+  const { user } = useAuth()
   const [plants, setPlants] = useState<Plant[]>([])
   const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(true)
@@ -18,9 +20,14 @@ export default function Plants() {
   const [formOpen, setFormOpen] = useState(false)
   const [editingPlant, setEditingPlant] = useState<Plant | null>(null)
   const sentinelRef = useRef<HTMLDivElement>(null)
+  const isFetchingRef = useRef(false)
 
   const fetchPage = useCallback(async (pageIndex: number) => {
+    if (isFetchingRef.current) return
+    isFetchingRef.current = true
+
     setLoading(true)
+
     const { data, error } = await supabase
       .from('plants')
       .select('*')
@@ -28,6 +35,9 @@ export default function Plants() {
       .range(pageIndex * PAGE_SIZE, pageIndex * PAGE_SIZE + PAGE_SIZE - 1)
 
     setLoading(false)
+
+    isFetchingRef.current = false
+
     if (error) return
     const newPlants = (data as Plant[]) ?? []
     setPlants((prev) => (pageIndex === 0 ? newPlants : [...prev, ...newPlants]))
@@ -42,12 +52,10 @@ export default function Plants() {
     const el = sentinelRef.current
     if (!el) return
     const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && hasMore && !loading) {
-        setPage((p) => {
-          const next = p + 1
-          fetchPage(next)
-          return next
-        })
+      if (entries[0].isIntersecting && hasMore && !loading && !isFetchingRef.current) {
+        const nextPage = page + 1
+        setPage(nextPage)
+        fetchPage(nextPage)
       }
     })
     observer.observe(el)
@@ -96,12 +104,14 @@ export default function Plants() {
         <div ref={sentinelRef} className="scroll-sentinel" />
       </Flex>
 
-      <div className="fab">
-        <Button size="3" radius="full" onClick={openCreate} style={{ boxShadow: 'var(--shadow-4)' }}>
-          <Plus size={18} />
-          {t('plants.add')}
-        </Button>
-      </div>
+      {user?.email === "admin@planttracker.com" &&
+        <div className="fab">
+          <Button size="3" radius="full" onClick={openCreate} style={{ boxShadow: 'var(--shadow-4)' }}>
+            <Plus size={18} />
+            {t('plants.add')}
+          </Button>
+        </div>
+      }
 
       <PlantFormDialog
         open={formOpen}

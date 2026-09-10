@@ -65,6 +65,7 @@ const resources = {
         notes: 'Notes',
         cancel: 'Cancel',
         save: 'Save',
+        delete: 'Delete',
         fill_error: 'Please fill in plant, plant date, and target harvest date.',
       },
       plant_form: {
@@ -162,6 +163,7 @@ const resources = {
         notes: 'Catatan',
         cancel: 'Batal',
         save: 'Simpan',
+        delete: 'Hapus',
         fill_error: 'Silakan isi tanaman, tanggal tanam, dan target tanggal panen.',
       },
       plant_form: {
